@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yfx2012.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1. 决策树-ID3算法   不相关属性问题 如果数据集中含有很多不相关的属性（即对分类任务没有用的属性），则某些不相关属性可能在树的构造过程中被选中，导致决策树过于庞大 通过在预处理阶段删除不相关属性，特征选择技术能够帮助提高决策树的准确率   不充足属性 即属性值全相同，无法确定类别，则哪一类例子多选哪一类   未知属性值问题，部分属性值缺失 赋予最通常值法 决策树方法：把未知属性作为“类”，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2021年秋研究生机器学习">
+<meta property="og:url" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="2012">
+<meta property="og:description" content="1. 决策树-ID3算法   不相关属性问题 如果数据集中含有很多不相关的属性（即对分类任务没有用的属性），则某些不相关属性可能在树的构造过程中被选中，导致决策树过于庞大 通过在预处理阶段删除不相关属性，特征选择技术能够帮助提高决策树的准确率   不充足属性 即属性值全相同，无法确定类别，则哪一类例子多选哪一类   未知属性值问题，部分属性值缺失 赋予最通常值法 决策树方法：把未知属性作为“类”，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/22195353-f883464d10694c6898aeac75bca4cd75.jpg">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225202506782.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225204512453.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225205559780.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225205609076.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225223200356.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226114729518.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225224144789.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225224202384.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226111006436.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226125401155.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226131329777.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226131407338.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226133917817.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226135918562.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226141531939.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226143025473.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226143057658.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226150017925.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226152445851.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226162353344.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226162432462.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226161736744.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226154533352.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226160201497.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226164907241.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226201921735.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203454857.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203509261.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203520096.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203530981.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226210631867.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226210851876.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226212935778.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226211330543.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155652519.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155731940.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155822276.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165742700.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165840690.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165919482.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165930838.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227171135638.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227171157388.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173716441.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173746348.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173822035.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173833976.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173856741.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227191230200.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227191440094.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226231340409.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142217963.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142402721.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142313329.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142504053.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142642642.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142831624.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142842749.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227143618886.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144716072.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144840261.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144928949.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145246005.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145256538.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145640295.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145707953.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151131592.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151218728.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151228957.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227153625171.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211228171003264.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227194849185.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227194908916.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227195021241.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227200800454.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227201049693.png">
+<meta property="article:published_time" content="2021-12-27T13:10:00.000Z">
+<meta property="article:modified_time" content="2021-12-29T03:21:33.454Z">
+<meta property="article:author" content="yfx">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="示例学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/22195353-f883464d10694c6898aeac75bca4cd75.jpg">
+
+<link rel="canonical" href="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>2021年秋研究生机器学习 | 2012</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">2012</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">有多少人工，就有多少智能</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/cat.jpg">
+      <meta itemprop="name" content="yfx">
+      <meta itemprop="description" content="初级炼丹师">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="2012">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2021年秋研究生机器学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-27 21:10:00" itemprop="dateCreated datePublished" datetime="2021-12-27T21:10:00+08:00">2021-12-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-12-29 11:21:33" itemprop="dateModified" datetime="2021-12-29T11:21:33+08:00">2021-12-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">研究生课程</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-决策树-ID3算法"><a href="#1-决策树-ID3算法" class="headerlink" title="1. 决策树-ID3算法"></a>1. 决策树-ID3算法</h2><img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/22195353-f883464d10694c6898aeac75bca4cd75.jpg" alt="img" style="zoom:80%;">
+
+<ul>
+<li>不相关属性问题<ul>
+<li>如果数据集中含有很多不相关的属性（即对分类任务没有用的属性），则某些不相关属性可能在树的构造过程中被选中，导致决策树过于庞大</li>
+<li>通过在预处理阶段删除不相关属性，特征选择技术能够帮助提高决策树的准确率</li>
+</ul>
+</li>
+<li>不充足属性<ul>
+<li>即属性值全相同，无法确定类别，则哪一类例子多选哪一类</li>
+</ul>
+</li>
+<li>未知属性值问题，部分属性值缺失<ul>
+<li>赋予最通常值法</li>
+<li>决策树方法：把未知属性作为“类”，原来的类作为“属性”</li>
+<li>贝叶斯方法：为每个可能值赋予一个概率</li>
+<li>按比例将未知属性值例子分配到各子集中</li>
+</ul>
+</li>
+<li>最优属性选择问题<ul>
+<li>使用信息增益比率代替信息增益</li>
+</ul>
+</li>
+<li>过拟合问题<ul>
+<li>划分训练集和验证集<ul>
+<li>设定阈值及时停止增长，预剪枝</li>
+<li>构造完整决策树，后剪枝</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="2-GS算法"><a href="#2-GS算法" class="headerlink" title="2. GS算法"></a>2. GS算法</h2><ul>
+<li><p>输入：例子集</p>
+</li>
+<li><p>输出：规则</p>
+</li>
+<li><p><strong>原则</strong>：</p>
+<ul>
+<li>a. 从所有属性值中选出<strong>覆盖正例最多</strong>的属性值</li>
+<li>b. 在<strong>覆盖正例数相同</strong>的情况下，<strong>优先选择覆盖反例少</strong>的属性值</li>
+</ul>
+</li>
+<li><p>算法过程：</p>
+<p>设PE，NE是正例、反例的集合。PE’，NE’是临时正例、反例集合。CPX表示公式，F表示规则（概念描述）</p>
+</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225202506782.png" alt="image-20211225202506782" style="zoom: 40%;">
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225204512453.png" alt="image-20211225204512453" style="zoom:90%;">
+
+<ul>
+<li>核心思想是贪心：<ul>
+<li>首先对正例加以概括，使尽量多的正例被覆盖，但这样可能产生不一致，可能有一些反例也被覆盖；</li>
+<li>于是对产生的复合进行特殊化，即合取一个<strong>选择子</strong>，排除一些反例，直到所有反例被排除。</li>
+</ul>
+</li>
+<li>贪心的部分，<strong>增加选择子的时候</strong>，应当尽量做到覆盖更多的正例，剔除尽量多的反例（也就是覆盖反例少的属性）</li>
+</ul>
+<h2 id="3-AQ算法"><a href="#3-AQ算法" class="headerlink" title="3. AQ算法"></a>3. AQ算法</h2><ul>
+<li><p><strong>一致：只覆盖正例不覆盖反例</strong>的规则被称为是一致的</p>
+</li>
+<li><p><strong>完备：覆盖所有正例</strong>的规则被称为是完备的</p>
+</li>
+<li><p>输入：例子集、参数#SOL、#CONS、Star的容量m、优化标准</p>
+</li>
+<li><p>输出：规则</p>
+</li>
+<li><p>算法主流程</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225205559780.png" alt="image-20211225205559780" style="zoom:80%;"></li>
+<li><p>Star的生成算法</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225205609076.png" alt="image-20211225205609076" style="zoom:80%;"></li>
+</ul>
+<h2 id="4-扩张矩阵与AE1"><a href="#4-扩张矩阵与AE1" class="headerlink" title="4. 扩张矩阵与AE1"></a>4. 扩张矩阵与AE1</h2><ul>
+<li>1985年J. R. Hong提出示例学习的扩张矩阵理论，率先证明了最优示例学习问题等都是NP难题，提出了一个近似的启发式算法AE1</li>
+<li>直观上是把反例矩阵中，对应的与正例相应维度上取值相同的元素替换成死元素，最后在剩余的非死元素中，找一条路径，路径上的元素值不能取，然后得到相应的规则</li>
+<li>AE1算法思想：优先选择“最大公共元素”，即在最多数目的扩张矩阵中出现的元素</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225223200356.png" alt="image-20211225223200356" style="zoom:80%;">
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226114729518.png" alt="image-20211226114729518" style="zoom:80%;">
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225224144789.png" alt="image-20211225224144789" style="zoom:60%;">
+
+
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225224202384.png" alt="image-20211225224202384" style="zoom:67%;">
+
+<h2 id="5-概念学习-候选消除算法"><a href="#5-概念学习-候选消除算法" class="headerlink" title="5. 概念学习-候选消除算法"></a>5. 概念学习-候选消除算法</h2><ul>
+<li><p>概念学习的目的：从训练样本集D中归纳演绎出一般规律</p>
+</li>
+<li><p>例子：</p>
+<ul>
+<li>基于某天的各属性，预测出该天EnjoySport的值</li>
+<li>具体任务：学习使得EnjoySport=yes的日子，并将其表示为属性约束的合取式</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226111006436.png" alt="image-20211226111006436" style="zoom:80%;"></li>
+<li><p>假设h可表示为实例各属性约束的<strong>合取式</strong>，在本例为拥有6个约束的向量，每个属性取值为：</p>
+<ul>
+<li>明确指定的属性值（如warm）</li>
+<li>“？”表示任意值</li>
+<li>“<em>ϕ</em>”表示不接受任何值</li>
+</ul>
+</li>
+<li><p>如果判定只在寒冷和潮湿的日子进行水上活动，其他属性无关，则假设可写为：<?, Cold, High, ?, ?, ?></p>
+</li>
+<li><p>最一般的假设是不论天气属性如何，都喜欢水上活动，假设为：<?, ?, ?, ?, ?, ?></p>
+</li>
+<li><p>最特殊的假设是不论天气属性如何，都不喜欢水上活动，假设为：&lt;ϕ, ϕ, ϕ, ϕ, ϕ, ϕ&gt;</p>
+</li>
+<li><p>术语定义</p>
+<ul>
+<li>实例集合X：所有可能的日子，每个日子由Sky、AirTemp、Humidity、Wind、Water、Forecast六个属性表示</li>
+<li>目标概念c：待学习的概念或函数，即c: X—&gt;{1, 0}，在本例中：当EnjoySport=yes, c(x)=1；当EnjoySport=no, c(x)=0</li>
+<li>正例：c(x)=1的实例</li>
+<li>反例：c(x)=0的实例</li>
+<li>训练样例的集合D：&lt;x, c(x)&gt;</li>
+<li>所有可能假设h的集合记为H</li>
+<li>机器学习的目标，寻找一个假设h，使对于X中的所有x，h(x)=c(x)<ul>
+<li>即对于正例应该满足h(x)=1</li>
+<li>对于反例应该满足h(x)=0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>作为搜索的概念学习</p>
+<ul>
+<li>概念学习就是一个搜索的过程，<strong>范围是假设的表示所隐含定义的整个空间</strong></li>
+<li>搜索的目标：为了寻找能最好地拟合训练样例的假设</li>
+<li>当假设的表示形式选定后，也就隐含地为学习算法确定了所有假设的空间</li>
+</ul>
+</li>
+<li><p>计算</p>
+<ul>
+<li>如果属性Sky有3种可能的值，其他5个属性都只有两种可能的值</li>
+<li>实例空间X：3 X 2 X 2 X 2 X 2 X 2 = 96种不同的实例</li>
+<li>假设空间H<ul>
+<li><strong>语法不同的假设</strong>：5 X 4 X 4 X 4 X 4 X 4 = 5120种</li>
+<li><strong>语义相同的假设</strong>：覆盖相同例子集合的假设</li>
+<li><strong>语义不同的假设</strong>：覆盖例子集合不同的假设<ul>
+<li><strong>包含有ϕ符号的假设代表空实例集合，即它们将每个实例都分类为反例</strong></li>
+<li>&lt;∅, ∅, ∅, ∅, ∅, ∅&gt;和&lt;∅, ?, ?, ?, ?, ?&gt;、&lt;∅, ∅, ?, ?, ?, ?&gt;等等其实是一样的假设</li>
+<li>于是有1 + 4 X 3 X 3 X 3 X 3 X 3 = 973个</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>假设的一般到特殊序</p>
+<ul>
+<li>H中存在偏序关系：<ul>
+<li>h2&gt;=h1，h2&gt;=h3，h2比h1和h3要更加General</li>
+<li>h1和h3之间不能定义谁更普遍</li>
+</ul>
+</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226125401155.png" alt="image-20211226125401155" style="zoom: 50%;"></li>
+<li><p>Find-S算法</p>
+<ul>
+<li>利用偏序来搜索假设空间，沿着偏序链，从较特殊的假设逐渐转移到较一般的假设，即从h0–&gt;…-&gt;h4</li>
+<li>因此找到了极大特殊假设：能够满足所有训练集中的正例，且极特殊</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226131329777.png" alt="image-20211226131329777" style="zoom:80%;"></li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226131407338.png" alt="image-20211226131407338" style="zoom: 50%;">
+
+<ul>
+<li>变型空间和候选消除算法<ul>
+<li>Find-S输出的是：H中能够拟合训练样例的<strong>多个假设中的一个</strong></li>
+<li>候选消除算法输出的是：与训练样例一致的<strong>所有假设的集合</strong></li>
+<li>变型空间：与训练样例一致的所有假设的集合被称为关于假设空间H和训练样例D的变型空间</li>
+</ul>
+</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226133917817.png" alt="image-20211226133917817" style="zoom: 67%;">
+
+
+
+<ul>
+<li><p>算法过程</p>
+<ul>
+<li>正例让变型空间的S边界逐渐泛化</li>
+<li>反例让变型空间的G边界逐渐特殊化</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226135918562.png" alt="image-20211226135918562" style="zoom:80%;"></li>
+<li><p>简要概述：<strong>（使用反例对G进行特化时，需要考虑是否满足与S之间的偏序关系；特化时考虑G中的每一个假设，看其是否能够将该反例剔除，如果可以则不需要修改，如果不能剔除反例，则需要为该假设增加约束条件）</strong></p>
+</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226141531939.png" alt="image-20211226141531939" style="zoom: 70%;">
+
+<ul>
+<li><p>归纳偏置</p>
+<ul>
+<li>之前的假设空间限制为只包含属性值的合取，这是一个归纳偏置</li>
+</ul>
+</li>
+<li><p>无偏的学习器</p>
+<ul>
+<li><p>X的幂集：集合X的所有子集的集合称为X的幂集</p>
+</li>
+<li><p>在EnjoySport任务中，实例空间X的大小为96，X的幂集大小为2^96，有偏假设空间H大小只有973个假设</p>
+</li>
+<li><p>新的假设空间H’允许使用假设的任意析取、合取和否定式</p>
+</li>
+<li><p>假设给定了3个正例（x1，x2，x3）和2个反例（x4，x5），则变型空间的S边界为：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226143025473.png" alt="image-20211226143025473" style="zoom:80%;">
+
+<p>G边界为：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226143057658.png" alt="image-20211226143057658" style="zoom:80%;"></li>
+<li><p>缺陷：</p>
+<ul>
+<li>只能对已见到的训练样例本身进行无歧义分类，不具有泛化性</li>
+<li>如果使用不完全学习得到的变型空间，并使用成员投票方式来进行未见实例分类，也会导致未见实例会被变型空间中刚好半数的假设划分为正例，而被另一半划分为反例</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-神经网络"><a href="#6-神经网络" class="headerlink" title="6. 神经网络"></a>6. 神经网络</h2><ul>
+<li><p>感知器</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226150017925.png" alt="image-20211226150017925" style="zoom:80%;">
+
+<ul>
+<li>决策面是线性的，对于线性可分的数据有较好的效果</li>
+<li>对于异或函数就无法分类</li>
+</ul>
+</li>
+<li><p>训练线性单元的梯度下降算法</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226152445851.png" alt="image-20211226152445851" style="zoom:80%;"></li>
+<li><p>训练线性单元的随机梯度下降或者增量梯度下降算法</p>
+<ul>
+<li>不再对所有样例汇总误差，而是根据每个单独样例的误差增量计算权值更新</li>
+<li>优点：<ul>
+<li>能够一定程度避免陷入局部最小值</li>
+<li><strong>一般会加快收敛过程</strong><ul>
+<li>仅通过一个样本计算近似的梯度，计算量会少很多</li>
+<li>尽管每一步梯度下降的方向并不是最优的，但是仍然能够收敛（实验证实）</li>
+<li>群山之中我想要找到最低的山谷，我按照重力作用向下走（梯度下降），先随机选择向西方向，然后再往南方。。。按照收敛的性质，我一定能够达到一个谷底，可能是局部最低点，也可能是全局的最低点，但是，这样肯定比精确梯度的速度快很多</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>三层感知器及反向传播算法</p>
+<ul>
+<li>标准的三层感知器网络</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226162353344.png" alt="image-20211226162353344" style="zoom:80%;">
+
+<ul>
+<li><p>三层感知器的判别函数</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226162432462.png" alt="image-20211226162432462" style="zoom: 67%;"></li>
+<li><p>反向传播算法</p>
+</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226161736744.png" alt="image-20211226161736744" style="zoom:80%;"></li>
+<li><p>过拟合问题</p>
+<ul>
+<li><p>为权值增加一个惩罚项，这将导致梯度下降搜寻较小的权值向量，减少过拟合风险</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226154533352.png" alt="image-20211226154533352" style="zoom:80%;"></li>
+<li><p>划分训练、验证、测试集，及时停止</p>
+</li>
+<li><p>数据增强</p>
+</li>
+<li><p>丢弃法dropout：在训练过程中随机丢弃神经元</p>
+</li>
+</ul>
+</li>
+<li><p>局部极小值问题</p>
+<ul>
+<li>随机梯度下降，即使进入局部最小，梯度也不为0，可以跳出</li>
+<li>以多组不同的参数值初始化网络，迭代停止后取误差最小解为最终参数</li>
+<li>冲量法：利用小批量的梯度和积攒的历史梯度信息来共同决定最终更新方向，故在进入局部最小时梯度也不为0，可以跳出</li>
+</ul>
+</li>
+<li><p>对误差增加一项目标函数的导数</p>
+<ul>
+<li><p>能够学习到一些图像的平移不变性</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226160201497.png" alt="image-20211226160201497" style="zoom:80%;"></li>
+</ul>
+</li>
+</ul>
+<h2 id="7-遗传算法"><a href="#7-遗传算法" class="headerlink" title="7. 遗传算法"></a>7. 遗传算法</h2><ul>
+<li>算法原型</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226164907241.png" alt="image-20211226164907241" style="zoom: 67%;">
+
+<ul>
+<li><p>算法概述</p>
+<ul>
+<li>算法迭代更新一个假设池，称为群体，包含p个假设</li>
+<li>在每一次迭代中，根据适应度函数评估群体中的所有成员，然后从当前群体中用概率方法选取适应度最高的个体产生新一代群体，在这些被选中的个体中，一部分保持原样地进入下一代群体，其他的被用作产生后代个体的基础，其中应用像交叉和变异这样的方法</li>
+<li>具体来看，每一次迭代产生的新一代Ps主要包括：<ul>
+<li>选择：计算每个成员的适应度，从而确定被选中的概率，从P中按概率选择**(1-r)p**个成员</li>
+<li>交叉：从P中按概率选择<strong>r · p / 2 对假设，每对假设&lt;h1, h2&gt;应用交叉算子产生两个后代</strong>。把所有后代加入Ps</li>
+<li>变异：从Ps中按均匀概率随机选择m%的成员。对每个选择的成员，在其二进制表示中随机选择一位取反</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>模式定理：使用数学刻画GA中群体随时间进化的过程</p>
+<ul>
+<li><p>首先只考虑选择步的影响</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226201921735.png" alt="image-20211226201921735" style="zoom:70%;"></li>
+</ul>
+</li>
+<li><p>遗传算法编码案例</p>
+<ul>
+<li>考虑outlook，有3个可能的值：Sunny、Overcast、Rain，则用一个3位二进制串表示，如010表示outlook=Overcast</li>
+<li>属性Wind有两个可能取值：Strong或Weak，用2位二进制串表示</li>
+<li>（outlook=Overcast 或 Rain）且 （Wind = Strong），可表示为长度5的位串：011 10<strong>（属性内部是析取，属性之间是合取）</strong></li>
+<li>分类情况PlayTennis=yes可以表示为2位二进制串</li>
+<li>IF Wind = Strong Then PlayTennis = yes，可表示为：111 10 10，前三位111表示outlook可随意取值，接着两位10表示Wind的约束，最后两位表示结果是yes</li>
+</ul>
+</li>
+<li><p>交叉和变异算子</p>
+<ul>
+<li><p>单点交叉：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203454857.png" alt="image-20211226203454857" style="zoom:80%;"></li>
+<li><p>两点交叉：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203509261.png" alt="image-20211226203509261" style="zoom:80%;"></li>
+<li><p>均匀交叉：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203520096.png" alt="image-20211226203520096" style="zoom:80%;"></li>
+<li><p>点变异：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203530981.png" alt="image-20211226203530981" style="zoom:80%;"></li>
+</ul>
+</li>
+</ul>
+<h2 id="8-基于实例的学习-K近邻算法"><a href="#8-基于实例的学习-K近邻算法" class="headerlink" title="8. 基于实例的学习-K近邻算法"></a>8. 基于实例的学习-K近邻算法</h2><ul>
+<li><p>算法思想</p>
+<ul>
+<li>训练过程：将训练数据存储起来</li>
+<li>分类过程：<ul>
+<li>对于给定的查询实例x，寻找训练样本中离x最近的k个实例</li>
+<li>返回k个实例中某一类别实例数最多的标签</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>原始算法过程：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226210631867.png" alt="image-20211226210631867" style="zoom:80%;"></li>
+<li><p>距离加权最近邻算法</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226210851876.png" alt="image-20211226210851876" style="zoom:80%;"></li>
+<li><p>局部加权回归：本质就是回归，只是将损失函数定义为局部加权</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226212935778.png" alt="image-20211226212935778" style="zoom:80%;"></li>
+<li><p>积极学习与消极学习</p>
+<ul>
+<li><strong>消极学习：延迟了如何从训练数据中泛化的决策，直到遇到一个新的查询案例时才进行</strong></li>
+<li>积极学习：在见到新的查询之前就做好了泛化的工作</li>
+</ul>
+</li>
+</ul>
+<h2 id="9-学习规则集合-FOIL算法"><a href="#9-学习规则集合-FOIL算法" class="headerlink" title="9. 学习规则集合-FOIL算法"></a>9. 学习规则集合-FOIL算法</h2><img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226211330543.png" alt="image-20211226211330543" style="zoom:80%;">
+
+<ul>
+<li><p>Pos:=Examples中目标谓词为True的成员</p>
+</li>
+<li><p>Neg:=Examples中目标谓词为False的成员</p>
+</li>
+<li><p>Learned_rules:={}</p>
+</li>
+<li><p>当Pos不空时，</p>
+<p>  学习NewRule</p>
+<ul>
+<li><p>NewRule:=没有前件的目标谓词规则</p>
+</li>
+<li><p>NewRuleNeg:=Neg</p>
+</li>
+<li><p>当NewRuleNeg不空时，</p>
+<p>增加新文字以特化NewRule</p>
+<ul>
+<li>对NewRule生成候选新文字，计算选取Foil信息增益最大的文字，将其作为NewRule的前件</li>
+<li>NewRuleNeg:=NewRuleNeg中满足NewRule的前件的子集</li>
+</ul>
+</li>
+<li><p>Learned_rules:=Learned_rules+NewRule</p>
+</li>
+<li><p>Pos:=Pos - {被NewRule覆盖的Pos成员}</p>
+</li>
+</ul>
+</li>
+<li><p>返回Learned_rules</p>
+</li>
+</ul>
+<h2 id="10-贝叶斯学习"><a href="#10-贝叶斯学习" class="headerlink" title="10. 贝叶斯学习"></a>10. 贝叶斯学习</h2><ul>
+<li><p>概念解释</p>
+<ul>
+<li>P(h)：h的先验概率，在没有训练数据之前就拥有的关于h的初始概率，通过经验获得</li>
+<li>P(D)：将要观察的训练数据D的先验概率</li>
+<li>P(D|h)：假设h成立的情况下观察到的数据D的概率</li>
+<li>P(h|D)：给定训练数据D时h成立的概率，h的后验概率</li>
+</ul>
+</li>
+<li><p>贝叶斯公式提供了从**先验概率P(h)<strong>以及P(D)和P(D|h)计算</strong>后验概率P(h|D)**的方法</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155652519.png" alt="image-20211227155652519" style="zoom:80%;"></li>
+<li><p>极大后验MAP假设</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155731940.png" alt="image-20211227155731940" style="zoom:80%;"></li>
+<li><p>极大似然ML假设：假定每个假设先验概率相同，其中<strong>P(D|h)被称为给定h时数据D的似然度</strong></p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155822276.png" alt="image-20211227155822276" style="zoom:80%;"></li>
+<li><p>贝叶斯最优分类器</p>
+<ul>
+<li><p>解决的问题：给定训练数据，对新实例的最可能分类是什么（除了简单应用MAP假设）</p>
+</li>
+<li><p>思想：新实例的最可能分类可通过合并所有假设的预测得到，用后验概率来加权。如果新样例的可能分类可取某集合V的任一值vj，那么概率P(vj|D)表示新实例分类为vj的概率，其值为：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165742700.png" alt="image-20211227165742700" style="zoom:80%;">
+
+<p>新实例的最优分类为使P(vj|D)最大的vj值，则贝叶斯最优分类器：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165840690.png" alt="image-20211227165840690" style="zoom:80%;"></li>
+<li><p>实例：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165919482.png" alt="image-20211227165919482" style="zoom:80%;">
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165930838.png" alt="image-20211227165930838" style="zoom:80%;"></li>
+</ul>
+</li>
+<li><p>朴素贝叶斯</p>
+</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227171135638.png" alt="image-20211227171135638" style="zoom:80%;">
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227171157388.png" alt="image-20211227171157388" style="zoom:80%;">
+
+
+
+<ul>
+<li><p>朴素贝叶斯实例</p>
+<ul>
+<li><p>新实例</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173716441.png" alt="image-20211227173716441" style="zoom:80%;"></li>
+<li><p>公式</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173746348.png" alt="image-20211227173746348" style="zoom:80%;"></li>
+<li><p>先验概率计算</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173822035.png" alt="image-20211227173822035" style="zoom:80%;"></li>
+<li><p>类条件概率计算</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173833976.png" alt="image-20211227173833976" style="zoom:80%;"></li>
+<li><p>根据公式计算分类为yes或no的概率</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173856741.png" alt="image-20211227173856741" style="zoom:80%;"></li>
+<li><p>结果：分类为no</p>
+</li>
+</ul>
+</li>
+<li><p>朴素贝叶斯分类文本（算法假定单词出现的概率独立于其在文本中的位置）</p>
+<ul>
+<li><p>Examples为一组文本文档及目标值，V为所有可能目标值的集合</p>
+</li>
+<li><p>第一步，收集Examples中所有单词、标点符号以及其他记号，构造一个词汇表Vocabulary</p>
+</li>
+<li><p>第二步，计算所需要的概率项：P(vj)和p(wk|vj)</p>
+<ul>
+<li><p>对V中每一类vj</p>
+<ul>
+<li><p>选出vj类别所含有的文档集合docsj</p>
+</li>
+<li><p>先验概率p(vj)=|docsj| / |Examples|</p>
+</li>
+<li><p>将docsj中所有成员连接起来建立单个文档Textj</p>
+</li>
+<li><p>对词汇表Vocabulary中每个单词wk计算类条件概率（其中n为Textj中不同单词位置的总数，nk为单词wk出现在Textj中的次数）</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227191230200.png" alt="image-20211227191230200" style="zoom:80%;"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>对于新的Doc，使用朴素贝叶斯估计类别：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227191440094.png" alt="image-20211227191440094" style="zoom:80%;"></li>
+</ul>
+</li>
+</ul>
+<h2 id="11-增强学习-Q学习算法"><a href="#11-增强学习-Q学习算法" class="headerlink" title="11. 增强学习-Q学习算法"></a>11. 增强学习-Q学习算法</h2><ul>
+<li><p>强化学习就是Agent在于环境的互动当中，为了达成一个目标而进行的学习过程</p>
+</li>
+<li><p>基本元素</p>
+<ul>
+<li>Agent：玩家</li>
+<li>Environment：环境</li>
+<li>Goal：目标</li>
+</ul>
+</li>
+<li><p>主要元素</p>
+<ul>
+<li>State：状态</li>
+<li>Action：行动</li>
+<li>Reward：奖励</li>
+</ul>
+</li>
+<li><p>核心元素</p>
+<ul>
+<li>Policy：策略，在某个状态下应该采取什么行动</li>
+<li><strong>Value：价值，决定了玩家的策略</strong><ul>
+<li>状态价值函数：预期将来会得到所有奖励之和，处于当前状态下，玩家在将来能够得到的所有奖励的一个期望值</li>
+<li>状态行动价值函数：在一个状态下，可能的行动所对应的价值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>围棋</p>
+<ul>
+<li><p>基本元素</p>
+<ul>
+<li>Agent：玩家本人（执白棋）</li>
+<li>Environment：棋盘、对手（执黑棋）</li>
+<li>Goal：赢得这局棋</li>
+</ul>
+</li>
+<li><p>主要元素</p>
+<ul>
+<li><p>State：棋盘上棋子分布状态</p>
+</li>
+<li><p>Action：落子在星位</p>
+</li>
+<li><p>Reward：初始奖励为0，并没有赢棋</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226231340409.png" alt="image-20211226231340409" style="zoom:50%;"></li>
+</ul>
+</li>
+<li><p>核心元素</p>
+<ul>
+<li>Policy：在某状态，采取什么行动赢棋概率最大</li>
+<li>Value：在一个状态下，采取的行动导致赢棋的概率</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Trial and Error：试错学习，在不断尝试中学习改正</p>
+</li>
+<li><p>Delay Reward：延迟奖励，一个行动可能没有奖励，但一定有价值，需要确定最终回报地生成应归功于序列中地哪一个动作</p>
+</li>
+<li><p>Exploration vs. Exploitation：探索和利用，不仅要利用已有的价值函数，还需要不断地去探索未知状态和动作来更新价值函数</p>
+</li>
+</ul>
+<ul>
+<li><p>马尔可夫决策过程MDP</p>
+<ul>
+<li><p>状态集合S</p>
+</li>
+<li><p>动作集合A</p>
+</li>
+<li><p>每个离散时间步t，处在当前状态st，选择当前动作at，获得回报rt = r(st, at)</p>
+</li>
+<li><p>学习一个策略：Pi: S —&gt; A，它根据当前状态st，选择下步执行的动作at，即Pi(st) = at</p>
+</li>
+<li><p>遵循任意一个策略Pi，从任意初始状态st获得的累计值为：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142217963.png" alt="image-20211227142217963" style="zoom:80%;">
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142402721.png" alt="image-20211227142402721" style="zoom:80%;">
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142313329.png" alt="image-20211227142313329" style="zoom:80%;"></li>
+<li><p>最优策略：</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142504053.png" alt="image-20211227142504053" style="zoom:80%;"></li>
+<li><p>立即回报值</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142642642.png" alt="image-20211227142642642" style="zoom:80%;"></li>
+<li><p>一个最优策略</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142831624.png" alt="image-20211227142831624" style="zoom:80%;"></li>
+<li><p>最优策略的价值函数</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142842749.png" alt="image-20211227142842749" style="zoom:80%;"></li>
+</ul>
+</li>
+<li><p>Q学习</p>
+</li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227143618886.png" alt="image-20211227143618886" style="zoom:80%;">
+
+<ul>
+<li><p>Q函数：Q(s, a)是从状态s开始并使用a作为第一个动作时的最大折算累积回报</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144716072.png" alt="image-20211227144716072" style="zoom:80%;">
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144840261.png" alt="image-20211227144840261" style="zoom:80%;"></li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144928949.png" alt="image-20211227144928949" style="zoom:80%;">
+
+<ul>
+<li><p><strong>一个学习Q的算法</strong></p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145246005.png" alt="image-20211227145246005" style="zoom:80%;">
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145256538.png" alt="image-20211227145256538" style="zoom:80%;"></li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145640295.png" alt="image-20211227145640295" style="zoom:80%;">
+
+
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145707953.png" alt="image-20211227145707953" style="zoom:80%;">
+
+
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151131592.png" alt="image-20211227151131592" style="zoom:80%;">
+
+<ul>
+<li><p><strong>Q学习收敛性</strong></p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151218728.png" alt="image-20211227151218728" style="zoom:80%;"></li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151228957.png" alt="image-20211227151228957" style="zoom:80%;">
+
+
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227153625171.png" alt="image-20211227153625171" style="zoom:60%;">
+
+
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211228171003264.png" alt="image-20211228171003264" style="zoom:70%;">
+
+
+
+
+
+<h2 id="12-主成分分析PCA"><a href="#12-主成分分析PCA" class="headerlink" title="12. 主成分分析PCA"></a>12. 主成分分析PCA</h2><ul>
+<li><p>目标是找到一个线性映射，在低维空间表示高维数据</p>
+</li>
+<li><p>建立新的坐标系，用更少的坐标重新表示数据，使得恢复数据的误差最小</p>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227194849185.png" alt="image-20211227194849185" style="zoom:70%;">
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227194908916.png" alt="image-20211227194908916" style="zoom:70%;"></li>
+</ul>
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227195021241.png" alt="image-20211227195021241" style="zoom:70%;">
+
+<ul>
+<li>应用：<ul>
+<li>数据降维，如人脸、动物等数据一般尺寸较大，如果将其展成一维数据送入分类器，数据量过大<ul>
+<li>数据维度过高，而样本不足，容易过拟合</li>
+<li>维度过高也会导致更多存储空间占用、导致计算量增加，减缓计算速度</li>
+</ul>
+</li>
+<li>人脸识别</li>
+</ul>
+</li>
+</ul>
+<h2 id="13-K-means和GMM"><a href="#13-K-means和GMM" class="headerlink" title="13. K-means和GMM"></a>13. K-means和GMM</h2><img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227200800454.png" alt="image-20211227200800454" style="zoom:80%;">
+
+
+
+<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227201049693.png" alt="image-20211227201049693" style="zoom:80%;">
+
+<ul>
+<li>相同点<ul>
+<li>都是迭代执行的算法，且迭代的策略也相同，算法开始执行时先对需要计算的参数赋初值，然后交替执行两个步骤，<ul>
+<li>一个步骤是对数据的估计（k-means是估计每个点所属聚类标签；GMM是计算样本由不同高斯产生的概率）</li>
+<li>第二步是用上一步算出的估计值重新计算参数值，更新目标参数（k-means是计算聚类中心位置；GMM是计算各个高斯分布的先验概率、均值、协方差矩阵）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>不同点<ul>
+<li>需要计算的参数不同：<ul>
+<li>k-means是聚类中心位置</li>
+<li>GMM是各个高斯分布的参数</li>
+</ul>
+</li>
+<li>计算目标参数的方法不同：<ul>
+<li>k-means是计算当前聚类中所有元素的位置的均值</li>
+<li>GMM是基于概率的算法，是通过计算似然函数的最大值实现分布参数的求解的</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a target="_blank" rel="noopener" href="http://xiongxoy.herokuapp.com/blog/2013/12/15/ji-qi-xue-xi-bei-kao/">2013年，学长复习博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/coder_kang/article/details/103898400">2019年，学长复习博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/dztgc/archive/2013/04/22/3036529.html">ID3算法</a></li>
+<li><a target="_blank" rel="noopener" href="http://lib.cqvip.com/Qikan/Article/Detail?id=537211">示例学习的扩张矩阵理论</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_42043597/article/details/101522501">概念学习和候选消除算法</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_45459356/article/details/116019830">FOIL算法</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV13a4y1J7bw?p=6">强化学习：B站PenicillinLP讲解</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zjutzz/p/5083623.html">GMM和K-means算法比较</a></li>
+<li>模式识别课程</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E7%A4%BA%E4%BE%8B%E5%AD%A6%E4%B9%A0/" rel="tag"># 示例学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/10/16/deep-learning/34-Multi-GPU%20training/" rel="prev" title="多GPU训练">
+      <i class="fa fa-chevron-left"></i> 多GPU训练
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%86%B3%E7%AD%96%E6%A0%91-ID3%E7%AE%97%E6%B3%95"><span class="nav-text">1. 决策树-ID3算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-GS%E7%AE%97%E6%B3%95"><span class="nav-text">2. GS算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-AQ%E7%AE%97%E6%B3%95"><span class="nav-text">3. AQ算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%89%A9%E5%BC%A0%E7%9F%A9%E9%98%B5%E4%B8%8EAE1"><span class="nav-text">4. 扩张矩阵与AE1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%A6%82%E5%BF%B5%E5%AD%A6%E4%B9%A0-%E5%80%99%E9%80%89%E6%B6%88%E9%99%A4%E7%AE%97%E6%B3%95"><span class="nav-text">5. 概念学习-候选消除算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-text">6. 神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95"><span class="nav-text">7. 遗传算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E5%9F%BA%E4%BA%8E%E5%AE%9E%E4%BE%8B%E7%9A%84%E5%AD%A6%E4%B9%A0-K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95"><span class="nav-text">8. 基于实例的学习-K近邻算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E5%AD%A6%E4%B9%A0%E8%A7%84%E5%88%99%E9%9B%86%E5%90%88-FOIL%E7%AE%97%E6%B3%95"><span class="nav-text">9. 学习规则集合-FOIL算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AD%A6%E4%B9%A0"><span class="nav-text">10. 贝叶斯学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-%E5%A2%9E%E5%BC%BA%E5%AD%A6%E4%B9%A0-Q%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95"><span class="nav-text">11. 增强学习-Q学习算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90PCA"><span class="nav-text">12. 主成分分析PCA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-K-means%E5%92%8CGMM"><span class="nav-text">13. K-means和GMM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yfx"
+      src="/images/cat.jpg">
+  <p class="site-author-name" itemprop="name">yfx</p>
+  <div class="site-description" itemprop="description">初级炼丹师</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yfx</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">9k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">8 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
