@@ -18,102 +18,102 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"yfx2012.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"yfx2012.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="1. 决策树-ID3算法   不相关属性问题 如果数据集中含有很多不相关的属性（即对分类任务没有用的属性），则某些不相关属性可能在树的构造过程中被选中，导致决策树过于庞大 通过在预处理阶段删除不相关属性，特征选择技术能够帮助提高决策树的准确率   不充足属性 即属性值全相同，无法确定类别，则哪一类例子多选哪一类   未知属性值问题，部分属性值缺失 赋予最通常值法 决策树方法：把未知属性作为“类”，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2021年秋研究生机器学习">
-<meta property="og:url" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:url" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="2012">
 <meta property="og:description" content="1. 决策树-ID3算法   不相关属性问题 如果数据集中含有很多不相关的属性（即对分类任务没有用的属性），则某些不相关属性可能在树的构造过程中被选中，导致决策树过于庞大 通过在预处理阶段删除不相关属性，特征选择技术能够帮助提高决策树的准确率   不充足属性 即属性值全相同，无法确定类别，则哪一类例子多选哪一类   未知属性值问题，部分属性值缺失 赋予最通常值法 决策树方法：把未知属性作为“类”，">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/22195353-f883464d10694c6898aeac75bca4cd75.jpg">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225202506782.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225204512453.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225205559780.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225205609076.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225223200356.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226114729518.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225224144789.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225224202384.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226111006436.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226125401155.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226131329777.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226131407338.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226133917817.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226135918562.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226141531939.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226143025473.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226143057658.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226150017925.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226152445851.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226162353344.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226162432462.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226161736744.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226154533352.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226160201497.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226164907241.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226201921735.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203454857.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203509261.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203520096.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203530981.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226210631867.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226210851876.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226212935778.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226211330543.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155652519.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155731940.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155822276.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165742700.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165840690.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165919482.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165930838.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227171135638.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227171157388.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173716441.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173746348.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173822035.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173833976.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173856741.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227191230200.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227191440094.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226231340409.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142217963.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142402721.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142313329.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142504053.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142642642.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142831624.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142842749.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227143618886.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144716072.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144840261.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144928949.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145246005.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145256538.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145640295.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145707953.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151131592.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151218728.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151228957.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227153625171.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211228171003264.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227194849185.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227194908916.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227195021241.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227200800454.png">
-<meta property="og:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227201049693.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/22195353-f883464d10694c6898aeac75bca4cd75.jpg">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225202506782.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225204512453.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225205559780.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225205609076.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225223200356.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226114729518.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225224144789.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225224202384.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226111006436.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226125401155.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226131329777.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226131407338.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226133917817.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226135918562.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226141531939.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226143025473.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226143057658.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226150017925.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226152445851.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226162353344.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226162432462.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226161736744.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226154533352.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226160201497.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226164907241.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226201921735.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203454857.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203509261.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203520096.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203530981.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226210631867.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226210851876.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226212935778.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226211330543.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155652519.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155731940.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155822276.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165742700.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165840690.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165919482.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165930838.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227171135638.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227171157388.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173716441.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173746348.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173822035.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173833976.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173856741.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227191230200.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227191440094.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226231340409.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142217963.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142402721.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142313329.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142504053.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142642642.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142831624.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142842749.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227143618886.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144716072.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144840261.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144928949.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145246005.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145256538.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145640295.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145707953.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151131592.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151218728.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151228957.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227153625171.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211228171003264.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227194849185.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227194908916.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227195021241.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227200800454.png">
+<meta property="og:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227201049693.png">
 <meta property="article:published_time" content="2021-12-27T13:10:00.000Z">
-<meta property="article:modified_time" content="2021-12-29T10:52:30.792Z">
+<meta property="article:modified_time" content="2021-12-29T12:10:21.112Z">
 <meta property="article:author" content="yfx">
 <meta property="article:tag" content="机器学习">
 <meta property="article:tag" content="示例学习">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/22195353-f883464d10694c6898aeac75bca4cd75.jpg">
+<meta name="twitter:image" content="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/22195353-f883464d10694c6898aeac75bca4cd75.jpg">
 
-<link rel="canonical" href="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+<link rel="canonical" href="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
 
 
 <script id="page-configurations">
@@ -242,7 +242,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yfx2012.top/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+    <link itemprop="mainEntityOfPage" href="https://yfx2012.top/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/cat.jpg">
@@ -272,7 +272,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-29 18:52:30" itemprop="dateModified" datetime="2021-12-29T18:52:30+08:00">2021-12-29</time>
+                <time title="修改时间：2021-12-29 20:10:21" itemprop="dateModified" datetime="2021-12-29T20:10:21+08:00">2021-12-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -309,7 +309,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="1-决策树-ID3算法"><a href="#1-决策树-ID3算法" class="headerlink" title="1. 决策树-ID3算法"></a>1. 决策树-ID3算法</h2><img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/22195353-f883464d10694c6898aeac75bca4cd75.jpg" alt="img" style="zoom:80%;">
+        <h2 id="1-决策树-ID3算法"><a href="#1-决策树-ID3算法" class="headerlink" title="1. 决策树-ID3算法"></a>1. 决策树-ID3算法</h2><img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/22195353-f883464d10694c6898aeac75bca4cd75.jpg" alt="img" style="zoom:80%;">
 
 <ul>
 <li>不相关属性问题<ul>
@@ -358,9 +358,9 @@
 <p>设PE，NE是正例、反例的集合。PE’，NE’是临时正例、反例集合。CPX表示公式，F表示规则（概念描述）</p>
 </li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225202506782.png" alt="image-20211225202506782" style="zoom: 40%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225202506782.png" alt="image-20211225202506782" style="zoom: 40%;">
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225204512453.png" alt="image-20211225204512453" style="zoom:90%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225204512453.png" alt="image-20211225204512453" style="zoom:90%;">
 
 <ul>
 <li>核心思想是贪心：<ul>
@@ -380,24 +380,24 @@
 <li><p>输出：规则</p>
 </li>
 <li><p>算法主流程</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225205559780.png" alt="image-20211225205559780" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225205559780.png" alt="image-20211225205559780" style="zoom:80%;"></li>
 <li><p>Star的生成算法</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225205609076.png" alt="image-20211225205609076" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225205609076.png" alt="image-20211225205609076" style="zoom:80%;"></li>
 </ul>
 <h2 id="4-扩张矩阵与AE1"><a href="#4-扩张矩阵与AE1" class="headerlink" title="4. 扩张矩阵与AE1"></a>4. 扩张矩阵与AE1</h2><ul>
 <li>1985年J. R. Hong提出示例学习的扩张矩阵理论，率先证明了最优示例学习问题等都是NP难题，提出了一个近似的启发式算法AE1</li>
 <li>直观上是把反例矩阵中，对应的与正例相应维度上取值相同的元素替换成死元素，最后在剩余的非死元素中，找一条路径，路径上的元素值不能取，然后得到相应的规则</li>
 <li>AE1算法思想：优先选择“最大公共元素”，即在最多数目的扩张矩阵中出现的元素</li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225223200356.png" alt="image-20211225223200356" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225223200356.png" alt="image-20211225223200356" style="zoom:80%;">
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226114729518.png" alt="image-20211226114729518" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226114729518.png" alt="image-20211226114729518" style="zoom:80%;">
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225224144789.png" alt="image-20211225224144789" style="zoom:60%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225224144789.png" alt="image-20211225224144789" style="zoom:60%;">
 
 
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225224202384.png" alt="image-20211225224202384" style="zoom:67%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211225224202384.png" alt="image-20211225224202384" style="zoom:67%;">
 
 <h2 id="5-概念学习-候选消除算法"><a href="#5-概念学习-候选消除算法" class="headerlink" title="5. 概念学习-候选消除算法"></a>5. 概念学习-候选消除算法</h2><ul>
 <li><p>概念学习的目的：从训练样本集D中归纳演绎出一般规律</p>
@@ -407,7 +407,7 @@
 <li>基于某天的各属性，预测出该天EnjoySport的值</li>
 <li>具体任务：学习使得EnjoySport=yes的日子，并将其表示为属性约束的合取式</li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226111006436.png" alt="image-20211226111006436" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226111006436.png" alt="image-20211226111006436" style="zoom:80%;"></li>
 <li><p>假设h可表示为实例各属性约束的<strong>合取式</strong>，在本例为拥有6个约束的向量，每个属性取值为：</p>
 <ul>
 <li>明确指定的属性值（如warm）</li>
@@ -468,15 +468,15 @@
 </ul>
 </li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226125401155.png" alt="image-20211226125401155" style="zoom: 50%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226125401155.png" alt="image-20211226125401155" style="zoom: 50%;"></li>
 <li><p>Find-S算法</p>
 <ul>
 <li>利用偏序来搜索假设空间，沿着偏序链，从较特殊的假设逐渐转移到较一般的假设，即从h0–&gt;…-&gt;h4</li>
 <li>因此找到了极大特殊假设：能够满足所有训练集中的正例，且极特殊</li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226131329777.png" alt="image-20211226131329777" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226131329777.png" alt="image-20211226131329777" style="zoom:80%;"></li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226131407338.png" alt="image-20211226131407338" style="zoom: 50%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226131407338.png" alt="image-20211226131407338" style="zoom: 50%;">
 
 <ul>
 <li>变型空间和候选消除算法<ul>
@@ -486,7 +486,7 @@
 </ul>
 </li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226133917817.png" alt="image-20211226133917817" style="zoom: 67%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226133917817.png" alt="image-20211226133917817" style="zoom: 67%;">
 
 
 
@@ -496,11 +496,11 @@
 <li>正例让变型空间的S边界逐渐泛化</li>
 <li>反例让变型空间的G边界逐渐特殊化</li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226135918562.png" alt="image-20211226135918562" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226135918562.png" alt="image-20211226135918562" style="zoom:80%;"></li>
 <li><p>简要概述：<strong>（使用反例对G进行特化时，需要考虑是否满足与S之间的偏序关系；特化时考虑G中的每一个假设，看其是否能够将该反例剔除，如果可以则不需要修改，如果不能剔除反例，则需要为该假设增加约束条件）</strong></p>
 </li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226141531939.png" alt="image-20211226141531939" style="zoom: 70%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226141531939.png" alt="image-20211226141531939" style="zoom: 70%;">
 
 <ul>
 <li><p>归纳偏置</p>
@@ -517,10 +517,10 @@
 <li><p>新的假设空间H’允许使用假设的任意析取、合取和否定式</p>
 </li>
 <li><p>假设给定了3个正例（x1，x2，x3）和2个反例（x4，x5），则变型空间的S边界为：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226143025473.png" alt="image-20211226143025473" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226143025473.png" alt="image-20211226143025473" style="zoom:80%;">
 
 <p>G边界为：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226143057658.png" alt="image-20211226143057658" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226143057658.png" alt="image-20211226143057658" style="zoom:80%;"></li>
 <li><p>缺陷：</p>
 <ul>
 <li>只能对已见到的训练样例本身进行无歧义分类，不具有泛化性</li>
@@ -532,7 +532,7 @@
 </ul>
 <h2 id="6-神经网络"><a href="#6-神经网络" class="headerlink" title="6. 神经网络"></a>6. 神经网络</h2><ul>
 <li><p>感知器</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226150017925.png" alt="image-20211226150017925" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226150017925.png" alt="image-20211226150017925" style="zoom:80%;">
 
 <ul>
 <li>决策面是线性的，对于线性可分的数据有较好的效果</li>
@@ -540,7 +540,7 @@
 </ul>
 </li>
 <li><p>训练线性单元的梯度下降算法</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226152445851.png" alt="image-20211226152445851" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226152445851.png" alt="image-20211226152445851" style="zoom:80%;"></li>
 <li><p>训练线性单元的随机梯度下降或者增量梯度下降算法</p>
 <ul>
 <li>不再对所有样例汇总误差，而是根据每个单独样例的误差增量计算权值更新</li>
@@ -560,19 +560,19 @@
 <ul>
 <li>标准的三层感知器网络</li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226162353344.png" alt="image-20211226162353344" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226162353344.png" alt="image-20211226162353344" style="zoom:80%;">
 
 <ul>
 <li><p>三层感知器的判别函数</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226162432462.png" alt="image-20211226162432462" style="zoom: 67%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226162432462.png" alt="image-20211226162432462" style="zoom: 67%;"></li>
 <li><p>反向传播算法</p>
 </li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226161736744.png" alt="image-20211226161736744" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226161736744.png" alt="image-20211226161736744" style="zoom:80%;"></li>
 <li><p>过拟合问题</p>
 <ul>
 <li><p>为权值增加一个惩罚项，这将导致梯度下降搜寻较小的权值向量，减少过拟合风险</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226154533352.png" alt="image-20211226154533352" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226154533352.png" alt="image-20211226154533352" style="zoom:80%;"></li>
 <li><p>划分训练、验证、测试集，及时停止</p>
 </li>
 <li><p>数据增强</p>
@@ -591,14 +591,14 @@
 <li><p>对误差增加一项目标函数的导数</p>
 <ul>
 <li><p>能够学习到一些图像的平移不变性</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226160201497.png" alt="image-20211226160201497" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226160201497.png" alt="image-20211226160201497" style="zoom:80%;"></li>
 </ul>
 </li>
 </ul>
 <h2 id="7-遗传算法"><a href="#7-遗传算法" class="headerlink" title="7. 遗传算法"></a>7. 遗传算法</h2><ul>
 <li>算法原型</li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226164907241.png" alt="image-20211226164907241" style="zoom: 67%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226164907241.png" alt="image-20211226164907241" style="zoom: 67%;">
 
 <ul>
 <li><p>算法概述</p>
@@ -616,7 +616,7 @@
 <li><p>模式定理：使用数学刻画GA中群体随时间进化的过程</p>
 <ul>
 <li><p>首先只考虑选择步的影响</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226201921735.png" alt="image-20211226201921735" style="zoom:70%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226201921735.png" alt="image-20211226201921735" style="zoom:70%;"></li>
 </ul>
 </li>
 <li><p>遗传算法编码案例</p>
@@ -631,13 +631,13 @@
 <li><p>交叉和变异算子</p>
 <ul>
 <li><p>单点交叉：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203454857.png" alt="image-20211226203454857" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203454857.png" alt="image-20211226203454857" style="zoom:80%;"></li>
 <li><p>两点交叉：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203509261.png" alt="image-20211226203509261" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203509261.png" alt="image-20211226203509261" style="zoom:80%;"></li>
 <li><p>均匀交叉：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203520096.png" alt="image-20211226203520096" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203520096.png" alt="image-20211226203520096" style="zoom:80%;"></li>
 <li><p>点变异：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203530981.png" alt="image-20211226203530981" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226203530981.png" alt="image-20211226203530981" style="zoom:80%;"></li>
 </ul>
 </li>
 </ul>
@@ -653,11 +653,11 @@
 </ul>
 </li>
 <li><p>原始算法过程：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226210631867.png" alt="image-20211226210631867" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226210631867.png" alt="image-20211226210631867" style="zoom:80%;"></li>
 <li><p>距离加权最近邻算法</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226210851876.png" alt="image-20211226210851876" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226210851876.png" alt="image-20211226210851876" style="zoom:80%;"></li>
 <li><p>局部加权回归：本质就是回归，只是将损失函数定义为局部加权</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226212935778.png" alt="image-20211226212935778" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226212935778.png" alt="image-20211226212935778" style="zoom:80%;"></li>
 <li><p>积极学习与消极学习</p>
 <ul>
 <li><strong>消极学习：延迟了如何从训练数据中泛化的决策，直到遇到一个新的查询案例时才进行</strong></li>
@@ -665,7 +665,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="9-学习规则集合-FOIL算法"><a href="#9-学习规则集合-FOIL算法" class="headerlink" title="9. 学习规则集合-FOIL算法"></a>9. 学习规则集合-FOIL算法</h2><img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226211330543.png" alt="image-20211226211330543" style="zoom:80%;">
+<h2 id="9-学习规则集合-FOIL算法"><a href="#9-学习规则集合-FOIL算法" class="headerlink" title="9. 学习规则集合-FOIL算法"></a>9. 学习规则集合-FOIL算法</h2><img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226211330543.png" alt="image-20211226211330543" style="zoom:80%;">
 
 <ul>
 <li><p>Pos:=Examples中目标谓词为True的成员</p>
@@ -707,32 +707,32 @@
 </ul>
 </li>
 <li><p>贝叶斯公式提供了从**先验概率P(h)<strong>以及P(D)和P(D|h)计算</strong>后验概率P(h|D)**的方法</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155652519.png" alt="image-20211227155652519" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155652519.png" alt="image-20211227155652519" style="zoom:80%;"></li>
 <li><p>极大后验MAP假设</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155731940.png" alt="image-20211227155731940" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155731940.png" alt="image-20211227155731940" style="zoom:80%;"></li>
 <li><p>极大似然ML假设：假定每个假设先验概率相同，其中<strong>P(D|h)被称为给定h时数据D的似然度</strong></p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155822276.png" alt="image-20211227155822276" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227155822276.png" alt="image-20211227155822276" style="zoom:80%;"></li>
 <li><p>贝叶斯最优分类器</p>
 <ul>
 <li><p>解决的问题：给定训练数据，对新实例的最可能分类是什么（除了简单应用MAP假设）</p>
 </li>
 <li><p>思想：新实例的最可能分类可通过合并所有假设的预测得到，用后验概率来加权。如果新样例的可能分类可取某集合V的任一值vj，那么概率P(vj|D)表示新实例分类为vj的概率，其值为：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165742700.png" alt="image-20211227165742700" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165742700.png" alt="image-20211227165742700" style="zoom:80%;">
 
 <p>新实例的最优分类为使P(vj|D)最大的vj值，则贝叶斯最优分类器：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165840690.png" alt="image-20211227165840690" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165840690.png" alt="image-20211227165840690" style="zoom:80%;"></li>
 <li><p>实例：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165919482.png" alt="image-20211227165919482" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165919482.png" alt="image-20211227165919482" style="zoom:80%;">
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165930838.png" alt="image-20211227165930838" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227165930838.png" alt="image-20211227165930838" style="zoom:80%;"></li>
 </ul>
 </li>
 <li><p>朴素贝叶斯</p>
 </li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227171135638.png" alt="image-20211227171135638" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227171135638.png" alt="image-20211227171135638" style="zoom:80%;">
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227171157388.png" alt="image-20211227171157388" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227171157388.png" alt="image-20211227171157388" style="zoom:80%;">
 
 
 
@@ -740,15 +740,15 @@
 <li><p>朴素贝叶斯实例</p>
 <ul>
 <li><p>新实例</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173716441.png" alt="image-20211227173716441" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173716441.png" alt="image-20211227173716441" style="zoom:80%;"></li>
 <li><p>公式</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173746348.png" alt="image-20211227173746348" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173746348.png" alt="image-20211227173746348" style="zoom:80%;"></li>
 <li><p>先验概率计算</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173822035.png" alt="image-20211227173822035" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173822035.png" alt="image-20211227173822035" style="zoom:80%;"></li>
 <li><p>类条件概率计算</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173833976.png" alt="image-20211227173833976" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173833976.png" alt="image-20211227173833976" style="zoom:80%;"></li>
 <li><p>根据公式计算分类为yes或no的概率</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173856741.png" alt="image-20211227173856741" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227173856741.png" alt="image-20211227173856741" style="zoom:80%;"></li>
 <li><p>结果：分类为no</p>
 </li>
 </ul>
@@ -770,13 +770,13 @@
 <li><p>将docsj中所有成员连接起来建立单个文档Textj</p>
 </li>
 <li><p>对词汇表Vocabulary中每个单词wk计算类条件概率（其中n为Textj中不同单词位置的总数，nk为单词wk出现在Textj中的次数）</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227191230200.png" alt="image-20211227191230200" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227191230200.png" alt="image-20211227191230200" style="zoom:80%;"></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><p>对于新的Doc，使用朴素贝叶斯估计类别：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227191440094.png" alt="image-20211227191440094" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227191440094.png" alt="image-20211227191440094" style="zoom:80%;"></li>
 </ul>
 </li>
 </ul>
@@ -823,7 +823,7 @@
 <li><p>Action：落子在星位</p>
 </li>
 <li><p>Reward：初始奖励为0，并没有赢棋</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226231340409.png" alt="image-20211226231340409" style="zoom:50%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211226231340409.png" alt="image-20211226231340409" style="zoom:50%;"></li>
 </ul>
 </li>
 <li><p>核心元素</p>
@@ -853,63 +853,63 @@
 <li><p>学习一个策略：Pi: S —&gt; A，它根据当前状态st，选择下步执行的动作at，即Pi(st) = at</p>
 </li>
 <li><p>遵循任意一个策略Pi，从任意初始状态st获得的累计值为：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142217963.png" alt="image-20211227142217963" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142217963.png" alt="image-20211227142217963" style="zoom:80%;">
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142402721.png" alt="image-20211227142402721" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142402721.png" alt="image-20211227142402721" style="zoom:80%;">
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142313329.png" alt="image-20211227142313329" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142313329.png" alt="image-20211227142313329" style="zoom:80%;"></li>
 <li><p>最优策略：</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142504053.png" alt="image-20211227142504053" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142504053.png" alt="image-20211227142504053" style="zoom:80%;"></li>
 <li><p>立即回报值</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142642642.png" alt="image-20211227142642642" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142642642.png" alt="image-20211227142642642" style="zoom:80%;"></li>
 <li><p>一个最优策略</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142831624.png" alt="image-20211227142831624" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142831624.png" alt="image-20211227142831624" style="zoom:80%;"></li>
 <li><p>最优策略的价值函数</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142842749.png" alt="image-20211227142842749" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227142842749.png" alt="image-20211227142842749" style="zoom:80%;"></li>
 </ul>
 </li>
 <li><p>Q学习</p>
 </li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227143618886.png" alt="image-20211227143618886" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227143618886.png" alt="image-20211227143618886" style="zoom:80%;">
 
 <ul>
 <li><p>Q函数：Q(s, a)是从状态s开始并使用a作为第一个动作时的最大折算累积回报</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144716072.png" alt="image-20211227144716072" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144716072.png" alt="image-20211227144716072" style="zoom:80%;">
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144840261.png" alt="image-20211227144840261" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144840261.png" alt="image-20211227144840261" style="zoom:80%;"></li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144928949.png" alt="image-20211227144928949" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227144928949.png" alt="image-20211227144928949" style="zoom:80%;">
 
 <ul>
 <li><p><strong>一个学习Q的算法</strong></p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145246005.png" alt="image-20211227145246005" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145246005.png" alt="image-20211227145246005" style="zoom:80%;">
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145256538.png" alt="image-20211227145256538" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145256538.png" alt="image-20211227145256538" style="zoom:80%;"></li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145640295.png" alt="image-20211227145640295" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145640295.png" alt="image-20211227145640295" style="zoom:80%;">
 
 
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145707953.png" alt="image-20211227145707953" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227145707953.png" alt="image-20211227145707953" style="zoom:80%;">
 
 
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151131592.png" alt="image-20211227151131592" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151131592.png" alt="image-20211227151131592" style="zoom:80%;">
 
 <ul>
 <li><p><strong>Q学习收敛性</strong></p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151218728.png" alt="image-20211227151218728" style="zoom:80%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151218728.png" alt="image-20211227151218728" style="zoom:80%;"></li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151228957.png" alt="image-20211227151228957" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227151228957.png" alt="image-20211227151228957" style="zoom:80%;">
 
 
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227153625171.png" alt="image-20211227153625171" style="zoom:60%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227153625171.png" alt="image-20211227153625171" style="zoom:60%;">
 
 
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211228171003264.png" alt="image-20211228171003264" style="zoom:70%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211228171003264.png" alt="image-20211228171003264" style="zoom:70%;">
 
 
 
@@ -919,11 +919,11 @@
 <li><p>目标是找到一个线性映射，在低维空间表示高维数据</p>
 </li>
 <li><p>建立新的坐标系，用更少的坐标重新表示数据，使得恢复数据的误差最小</p>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227194849185.png" alt="image-20211227194849185" style="zoom:70%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227194849185.png" alt="image-20211227194849185" style="zoom:70%;">
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227194908916.png" alt="image-20211227194908916" style="zoom:70%;"></li>
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227194908916.png" alt="image-20211227194908916" style="zoom:70%;"></li>
 </ul>
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227195021241.png" alt="image-20211227195021241" style="zoom:70%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227195021241.png" alt="image-20211227195021241" style="zoom:70%;">
 
 <ul>
 <li>应用：<ul>
@@ -936,11 +936,11 @@
 </ul>
 </li>
 </ul>
-<h2 id="13-K-means和GMM"><a href="#13-K-means和GMM" class="headerlink" title="13. K-means和GMM"></a>13. K-means和GMM</h2><img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227200800454.png" alt="image-20211227200800454" style="zoom:80%;">
+<h2 id="13-K-means和GMM"><a href="#13-K-means和GMM" class="headerlink" title="13. K-means和GMM"></a>13. K-means和GMM</h2><img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227200800454.png" alt="image-20211227200800454" style="zoom:80%;">
 
 
 
-<img src="/2021/12/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227201049693.png" alt="image-20211227201049693" style="zoom:80%;">
+<img src="/2021/12/27/graduate-courses/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20211227201049693.png" alt="image-20211227201049693" style="zoom:80%;">
 
 <ul>
 <li>相同点<ul>
@@ -1083,7 +1083,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
