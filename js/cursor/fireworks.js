@@ -110,6 +110,8 @@ class Circle {
     handlePageHide() {
       this.booms = []
       this.running = false
+      this.computerContext.clearRect(0, 0, this.globalWidth, this.globalHeight)
+      this.renderContext.clearRect(0, 0, this.globalWidth, this.globalHeight)
     }
   
     init() {
